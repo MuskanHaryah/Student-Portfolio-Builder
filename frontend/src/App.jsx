@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
+import PublicPortfolio from './pages/PublicPortfolio';
 import './index.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             }
           />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/portfolio/:username" element={<PublicPortfolio />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
