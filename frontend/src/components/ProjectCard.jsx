@@ -1,20 +1,56 @@
 import React from 'react';
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, onDelete, onEdit }) => {
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+      onDelete(project._id);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
       {/* Project Image */}
       {project.images && project.images.length > 0 ? (
-        <div className="w-full h-48 overflow-hidden bg-gray-200">
+        <div className="w-full h-48 overflow-hidden bg-gray-200 relative group">
           <img
             src={project.images[0]}
             alt={project.title}
-            className="w-full h-full object-cover hover:scale-105 transition"
+            className="w-full h-full object-cover group-hover:scale-105 transition"
           />
+          {/* Action buttons overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center gap-2">
+            <button
+              onClick={onEdit}
+              className="opacity-0 group-hover:opacity-100 transition bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="opacity-0 group-hover:opacity-100 transition bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ) : (
-        <div className="w-full h-48 bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+        <div className="w-full h-48 bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center relative group">
           <span className="text-gray-600">No image</span>
+          {/* Action buttons overlay for no image */}
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center gap-2">
+            <button
+              onClick={onEdit}
+              className="opacity-0 group-hover:opacity-100 transition bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="opacity-0 group-hover:opacity-100 transition bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       )}
 

@@ -89,6 +89,24 @@ const Dashboard = () => {
     setIsFormOpen(false);
   };
 
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await api.delete(`/projects/${projectId}`);
+      setProjects(projects.filter(p => p._id !== projectId));
+      setSuccessMessage('Project deleted successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert(error.response?.data?.message || 'Error deleting project. Please try again.');
+    }
+  };
+
+  const handleEditProject = (project) => {
+    // TODO: Implement edit functionality in next step
+    console.log('Edit project:', project);
+    alert('Edit functionality coming soon!');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Success Message */}
@@ -187,7 +205,13 @@ const Dashboard = () => {
                   + Add Project
                 </button>
               </div>
-              <ProjectGrid projects={projects} isLoading={isLoading} onAddProject={handleAddProject} />
+              <ProjectGrid 
+                projects={projects} 
+                isLoading={isLoading} 
+                onAddProject={handleAddProject}
+                onDeleteProject={handleDeleteProject}
+                onEditProject={handleEditProject}
+              />
             </div>
           )}
 
