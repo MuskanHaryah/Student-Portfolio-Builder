@@ -1,12 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import ProjectGrid from '../components/ProjectGrid';
+import ProjectForm from '../components/ProjectForm';
+import Modal from '../components/Modal';
+import api from '../services/api';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (activeTab === 'projects') {
+      fetchProjects();
+    }
+  }, [activeTab]);
+
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.get('/projects');
+      setProjects(response.data || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      setProjects([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddProject = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      // Prepare FormData for multipart upload
+      const submitData = new FormData();
+      
+      // Add text fields
+      submitData.append('title', formData.title);
+      submitData.append('description', formData.description);
+      submitData.append('githubLink', formData.githubLink);
+      submitData.append('liveLink', formData.liveLink);
+      submitData.append('dateCompleted', formData.dateCompleted);
+      
+      // Add technologies as JSON
+      submitData.append('technologies', JSON.stringify(formData.technologies));
+      
+      // Add image files
+      if (formData.images && formData.images.length > 0) {
+        formData.images.forEach((image) => {
+          // If it's a File object (new upload), add it
+          if (image instanceof File) {
+            submitData.append('images', image);
+          }
+          // If it's a string URL (existing image), we'll handle separately
+          else if (typeof image === 'string' && image.startsWith('http')) {
+            submitData.append('existingImages', image);
+          }
+        });
+      }
+      
+      const response = await api.post('/projects', submitData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      setProjects([response.data, ...projects]);
+      setIsFormOpen(false);
+      setSuccessMessage('Project created successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      alert(error.response?.data?.message || 'Error creating project. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleFormCancel = () => {
+    setIsFormOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Success Message */}
+      {successMessage && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+          {successMessage}
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl mx-auto">
@@ -69,7 +160,7 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
                   <div className="text-sm text-gray-600 font-medium">Total Projects</div>
-                  <div className="text-4xl font-bold text-blue-600 mt-2">0</div>
+                  <div className="text-4xl font-bold text-blue-600 mt-2">{projects.length}</div>
                 </div>
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                   <div className="text-sm text-gray-600 font-medium">Portfolio Views</div>
@@ -89,13 +180,14 @@ const Dashboard = () => {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">My Projects</h2>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition">
-                  Add Project
+                <button
+                  onClick={handleAddProject}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+                >
+                  + Add Project
                 </button>
               </div>
-              <div className="text-center py-12">
-                <p className="text-gray-500 mb-4">No projects yet. Create your first project to showcase your work!</p>
-              </div>
+              <ProjectGrid projects={projects} isLoading={isLoading} onAddProject={handleAddProject} />
             </div>
           )}
 
@@ -131,6 +223,19 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Project Form Modal */}
+      <Modal
+        isOpen={isFormOpen}
+        title="Create New Project"
+        onClose={handleFormCancel}
+      >
+        <ProjectForm
+          onSubmit={handleFormSubmit}
+          onCancel={handleFormCancel}
+          isLoading={isSubmitting}
+        />
+      </Modal>
     </div>
   );
 };
