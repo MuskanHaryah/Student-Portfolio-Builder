@@ -236,8 +236,28 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
+                <div className="pb-6 border-b">
+                  <h3 className="text-lg font-semibold mb-4">Share Your Portfolio</h3>
+                  <p className="text-gray-600 text-sm mb-3">Share your portfolio with employers and colleagues:</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={`${window.location.origin}/portfolio/${user?.username}`}
+                      readOnly
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm font-mono"
+                    />
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/portfolio/${user?.username}`);
+                        alert('Portfolio URL copied to clipboard!');
+                      }}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Account Actions</h3>
                   <button className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition font-medium">
                     Edit Profile
                   </button>
