@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import ProjectGrid from '../components/ProjectGrid';
 import ProjectForm from '../components/ProjectForm';
 import Modal from '../components/Modal';
+import ProfileSettings from '../components/ProfileSettings';
 import api from '../services/api';
 
 const Dashboard = () => {
@@ -105,6 +106,13 @@ const Dashboard = () => {
     // TODO: Implement edit functionality in next step
     console.log('Edit project:', project);
     alert('Edit functionality coming soon!');
+  };
+
+  const handleUpdateProfile = (updatedUser) => {
+    // Update user in context/auth state
+    // This assumes the AuthContext has a way to update user
+    // For now, just refresh the page to get updated data
+    window.location.reload();
   };
 
   return (
@@ -219,23 +227,10 @@ const Dashboard = () => {
             <div>
               <h2 className="text-2xl font-bold mb-6">Settings</h2>
               <div className="space-y-6">
-                <div className="pb-6 border-b">
-                  <h3 className="text-lg font-semibold mb-2">Profile Information</h3>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="text-gray-600">Email:</span>
-                      <span className="ml-2 font-medium">{user?.email}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Username:</span>
-                      <span className="ml-2 font-medium">@{user?.username}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Name:</span>
-                      <span className="ml-2 font-medium">{user?.name}</span>
-                    </div>
-                  </div>
-                </div>
+                {/* Profile Settings Component */}
+                <ProfileSettings user={user} onUpdate={handleUpdateProfile} />
+
+                {/* Share Your Portfolio */}
                 <div className="pb-6 border-b">
                   <h3 className="text-lg font-semibold mb-4">Share Your Portfolio</h3>
                   <p className="text-gray-600 text-sm mb-3">Share your portfolio with employers and colleagues:</p>
@@ -256,11 +251,6 @@ const Dashboard = () => {
                       Copy
                     </button>
                   </div>
-                </div>
-                <div>
-                  <button className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition font-medium">
-                    Edit Profile
-                  </button>
                 </div>
               </div>
             </div>

@@ -91,3 +91,46 @@ export const login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Update user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { name, bio, skills, github, linkedin, website } = req.body;
+
+    // Find and update user
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        name,
+        bio,
+        skills,
+        github,
+        linkedin,
+        website,
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        bio: user.bio,
+        skills: user.skills,
+        github: user.github,
+        linkedin: user.linkedin,
+        website: user.website,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
