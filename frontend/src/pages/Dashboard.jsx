@@ -16,8 +16,6 @@ const Dashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
 
   const fetchProjects = useCallback(async () => {
     console.log('[Dashboard] fetchProjects called');
@@ -48,8 +46,6 @@ const Dashboard = () => {
   }, [hasLoadedProjects, fetchProjects]);
 
   const handleAddProject = () => {
-    setIsEditMode(false);
-    setEditingProject(null);
     setIsFormOpen(true);
   };
 
@@ -83,37 +79,20 @@ const Dashboard = () => {
         });
       }
       
-      if (isEditMode && editingProject) {
-        // Update existing project
-        const response = await api.put(`/projects/${editingProject._id}`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        
-        // Update project in the list
-        setProjects(projects.map(p => p._id === editingProject._id ? response.data.project : p));
-        setSuccessMessage('Project updated successfully!');
-      } else {
-        // Create new project
-        const response = await api.post('/projects', submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        
-        setProjects([response.data, ...projects]);
-        setSuccessMessage('Project created successfully!');
-      }
+      const response = await api.post('/projects', submitData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       
+      setProjects([response.data, ...projects]);
       setIsFormOpen(false);
-      setIsEditMode(false);
-      setEditingProject(null);
+      setSuccessMessage('Project created successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      console.error('Error saving project:', error);
+      console.error('Error creating project:', error);
       console.error('Error response:', error.response);
-      const errorMsg = error.response?.data?.message || `Error ${isEditMode ? 'updating' : 'creating'} project. Please try again.`;
+      const errorMsg = error.response?.data?.message || 'Error creating project. Please try again.';
       setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(''), 4000);
     } finally {
@@ -123,8 +102,6 @@ const Dashboard = () => {
 
   const handleFormCancel = () => {
     setIsFormOpen(false);
-    setIsEditMode(false);
-    setEditingProject(null);
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -142,9 +119,10 @@ const Dashboard = () => {
   };
 
   const handleEditProject = (project) => {
-    setIsEditMode(true);
-    setEditingProject(project);
-    setIsFormOpen(true);
+    // TODO: Implement edit functionality in next step
+    console.log('Edit project:', project);
+    setErrorMessage('Edit functionality coming soon!');
+    setTimeout(() => setErrorMessage(''), 3000);
   };
 
   const handleUpdateProfile = () => {
@@ -350,14 +328,13 @@ const Dashboard = () => {
       {/* Project Form Modal */}
       <Modal
         isOpen={isFormOpen}
-        title={isEditMode ? "Edit Project" : "Create New Project"}
+        title="Create New Project"
         onClose={handleFormCancel}
       >
         <ProjectForm
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
           isLoading={isSubmitting}
-          initialData={isEditMode ? editingProject : null}
         />
       </Modal>
     </div>

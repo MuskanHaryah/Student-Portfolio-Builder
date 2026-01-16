@@ -18,8 +18,8 @@ router.get('/user/:username', getPublicPortfolio);
 // Protected routes (require authentication)
 router.get('/', authMiddleware, getUserProjects);
 router.get('/:id', getProjectById);
-router.post('/', authMiddleware, upload.array('images', 1), createProject);
-router.put('/:id', authMiddleware, upload.array('images', 1), updateProject);
+router.post('/', authMiddleware, upload.array('images', 5), createProject);
+router.put('/:id', authMiddleware, upload.array('images', 5), updateProject);
 router.delete('/:id', authMiddleware, deleteProject);
 
 export default router;
