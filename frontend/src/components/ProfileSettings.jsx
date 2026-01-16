@@ -7,6 +7,7 @@ const ProfileSettings = ({ user, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     name: user?.name || '',
     bio: user?.bio || '',
@@ -48,6 +49,7 @@ const ProfileSettings = ({ user, onUpdate }) => {
   const handleSave = async () => {
     setIsLoading(true);
     setSuccessMessage('');
+    setErrorMessage('');
     try {
       console.log('Sending profile update:', formData);
       const response = await api.put('/auth/profile', formData);
@@ -59,7 +61,9 @@ const ProfileSettings = ({ user, onUpdate }) => {
     } catch (error) {
       console.error('Error updating profile:', error);
       console.error('Error response:', error.response?.data);
-      alert(error.response?.data?.message || 'Error updating profile. Please try again.');
+      const errorMsg = error.response?.data?.message || 'Error updating profile. Please try again.';
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(''), 4000);
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +89,17 @@ const ProfileSettings = ({ user, onUpdate }) => {
             <div className="flex items-center gap-3">
               <span className="text-xl">✓</span>
               <span className="font-medium">{successMessage}</span>
+            </div>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl animate-slide-down">
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <span className="font-medium">{errorMessage}</span>
             </div>
           </div>
         )}

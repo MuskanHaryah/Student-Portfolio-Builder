@@ -1,5 +1,6 @@
 import Project from '../models/Project.js';
 import User from '../models/User.js';
+import cloudinary from '../config/cloudinary.js';
 
 // Get all projects for a user
 export const getUserProjects = async (req, res) => {
@@ -41,11 +42,40 @@ export const getProjectById = async (req, res) => {
 export const createProject = async (req, res) => {
   try {
     const userId = req.userId;
-    const { title, description, technologies, githubLink, liveLink, dateCompleted } = req.body;
+    let { title, description, technologies, githubLink, liveLink, dateCompleted } = req.body;
 
     // Validate required fields
     if (!title || !description) {
       return res.status(400).json({ message: 'Title and description are required' });
+    }
+
+    // Parse technologies if it's a string (from FormData)
+    if (typeof technologies === 'string') {
+      try {
+        technologies = JSON.parse(technologies);
+      } catch (e) {
+        technologies = [];
+      }
+    }
+
+    // Upload image to Cloudinary (only 1 image allowed)
+    let imageUrl = '';
+    if (req.files && req.files.length > 0) {
+      const file = req.files[0]; // Only take the first image
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'student-portfolio/projects',
+            resource_type: 'auto',
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(file.buffer);
+      });
+      imageUrl = result.secure_url;
     }
 
     const project = await Project.create({
@@ -56,13 +86,12 @@ export const createProject = async (req, res) => {
       githubLink: githubLink || '',
       liveLink: liveLink || '',
       dateCompleted: dateCompleted || new Date(),
+      images: imageUrl ? [imageUrl] : [],
     });
 
-    res.status(201).json({
-      message: 'Project created successfully',
-      project,
-    });
+    res.status(201).json(project);
   } catch (error) {
+    console.error('Error creating project:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -72,7 +101,7 @@ export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.userId;
-    const { title, description, technologies, githubLink, liveLink, dateCompleted } = req.body;
+    let { title, description, technologies, githubLink, liveLink, dateCompleted, existingImages } = req.body;
 
     // Find project and check ownership
     const project = await Project.findById(id);
@@ -85,6 +114,29 @@ export const updateProject = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this project' });
     }
 
+    // Parse technologies if it's a string (from FormData)
+    if (typeof technologies === 'string') {
+      try {
+        technologies = JSON.parse(technologies);
+      } catch (e) {
+        technologies = project.technologies; // Keep existing if parse fails
+      }
+    }
+
+    // Parse existingImages if it's a string (from FormData)
+    let existingImagesArray = [];
+    if (existingImages) {
+      if (typeof existingImages === 'string') {
+        try {
+          existingImagesArray = JSON.parse(existingImages);
+        } catch (e) {
+          existingImagesArray = [existingImages];
+        }
+      } else if (Array.isArray(existingImages)) {
+        existingImagesArray = existingImages;
+      }
+    }
+
     // Update fields
     if (title) project.title = title;
     if (description) project.description = description;
@@ -93,6 +145,27 @@ export const updateProject = async (req, res) => {
     if (liveLink !== undefined) project.liveLink = liveLink;
     if (dateCompleted) project.dateCompleted = dateCompleted;
 
+    // Handle image - only 1 image allowed
+    if (req.files && req.files.length > 0) {
+      const file = req.files[0]; // Only take the first image
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'student-portfolio/projects',
+            resource_type: 'auto',
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(file.buffer);
+      });
+      project.images = [result.secure_url];
+    } else if (existingImagesArray.length > 0) {
+      project.images = [existingImagesArray[0]]; // Only keep first image
+    }
+
     await project.save();
 
     res.status(200).json({
@@ -100,6 +173,7 @@ export const updateProject = async (req, res) => {
       project,
     });
   } catch (error) {
+    console.error('Error updating project:', error);
     res.status(500).json({ message: error.message });
   }
 };

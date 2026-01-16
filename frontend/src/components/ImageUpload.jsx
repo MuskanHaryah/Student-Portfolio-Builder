@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
-  const [previews, setPreviews] = useState(initialImages);
+  const [previews, setPreviews] = useState(initialImages.slice(0, 1)); // Only keep first image
   const [dragActive, setDragActive] = useState(false);
 
   const handleDrag = (e) => {
@@ -31,29 +31,22 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
   };
 
   const handleFiles = (files) => {
-    Array.from(files).forEach((file) => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const newPreview = {
-            id: Date.now() + Math.random(),
-            src: e.target.result, // Base64 for preview
-            file: file, // File object for upload
-            isNew: true,
-          };
-          setPreviews((prev) => {
-            const updated = [...prev, newPreview];
-            // Pass only the file objects to parent, not the preview objects
-            const fileObjects = updated
-              .filter(p => p.file instanceof File)
-              .map(p => p.file);
-            onImagesChange(fileObjects);
-            return updated;
-          });
+    const file = files[0]; // Only take the first file
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newPreview = {
+          id: Date.now() + Math.random(),
+          src: e.target.result, // Base64 for preview
+          file: file, // File object for upload
+          isNew: true,
         };
-        reader.readAsDataURL(file);
-      }
-    });
+        // Replace all previews with just this one image
+        setPreviews([newPreview]);
+        onImagesChange([file]);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleRemoveImage = (id) => {
@@ -69,7 +62,7 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
   return (
     <div>
       <label className="block text-sm font-medium text-warm-700 mb-3">
-        Project Images
+        Project Image
       </label>
 
       {/* Upload Area */}
@@ -87,15 +80,14 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
         <input
           type="file"
           id="imageInput"
-          multiple
           accept="image/*"
           onChange={handleFileInput}
           className="hidden"
         />
         <label htmlFor="imageInput" className="cursor-pointer">
           <div className="text-4xl text-primary-400 mb-3">📷</div>
-          <p className="text-warm-700 font-medium mb-1">Drag images here or click to select</p>
-          <p className="text-warm-500 text-sm">PNG, JPG, GIF up to 5MB each</p>
+          <p className="text-warm-700 font-medium mb-1">Drag image here or click to select</p>
+          <p className="text-warm-500 text-sm">PNG, JPG, GIF up to 5MB</p>
         </label>
       </div>
 

@@ -15,6 +15,9 @@ const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
 
   const fetchProjects = useCallback(async () => {
     console.log('[Dashboard] fetchProjects called');
@@ -37,13 +40,16 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Fetch projects on initial mount
   useEffect(() => {
-    if (activeTab === 'projects' && !hasLoadedProjects) {
+    if (!hasLoadedProjects) {
       fetchProjects();
     }
-  }, [activeTab, hasLoadedProjects, fetchProjects]);
+  }, [hasLoadedProjects, fetchProjects]);
 
   const handleAddProject = () => {
+    setIsEditMode(false);
+    setEditingProject(null);
     setIsFormOpen(true);
   };
 
@@ -77,19 +83,39 @@ const Dashboard = () => {
         });
       }
       
-      const response = await api.post('/projects', submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      if (isEditMode && editingProject) {
+        // Update existing project
+        const response = await api.put(`/projects/${editingProject._id}`, submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        // Update project in the list
+        setProjects(projects.map(p => p._id === editingProject._id ? response.data.project : p));
+        setSuccessMessage('Project updated successfully!');
+      } else {
+        // Create new project
+        const response = await api.post('/projects', submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        setProjects([response.data, ...projects]);
+        setSuccessMessage('Project created successfully!');
+      }
       
-      setProjects([response.data, ...projects]);
       setIsFormOpen(false);
-      setSuccessMessage('Project created successfully!');
+      setIsEditMode(false);
+      setEditingProject(null);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      console.error('Error creating project:', error);
-      alert(error.response?.data?.message || 'Error creating project. Please try again.');
+      console.error('Error saving project:', error);
+      console.error('Error response:', error.response);
+      const errorMsg = error.response?.data?.message || `Error ${isEditMode ? 'updating' : 'creating'} project. Please try again.`;
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(''), 4000);
     } finally {
       setIsSubmitting(false);
     }
@@ -97,6 +123,8 @@ const Dashboard = () => {
 
   const handleFormCancel = () => {
     setIsFormOpen(false);
+    setIsEditMode(false);
+    setEditingProject(null);
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -107,14 +135,16 @@ const Dashboard = () => {
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error deleting project:', error);
-      alert(error.response?.data?.message || 'Error deleting project. Please try again.');
+      const errorMsg = error.response?.data?.message || 'Error deleting project. Please try again.';
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(''), 4000);
     }
   };
 
   const handleEditProject = (project) => {
-    // TODO: Implement edit functionality in next step
-    console.log('Edit project:', project);
-    alert('Edit functionality coming soon!');
+    setIsEditMode(true);
+    setEditingProject(project);
+    setIsFormOpen(true);
   };
 
   const handleUpdateProfile = () => {
@@ -128,10 +158,24 @@ const Dashboard = () => {
     <div className="min-h-screen bg-cream-50">
       {/* Success Message */}
       {successMessage && (
-        <div className="fixed top-4 right-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-4 rounded-2xl shadow-rose z-50 animate-slide-down max-w-sm">
+        <div className="fixed top-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-2xl shadow-lg animate-slide-down max-w-sm" style={{ zIndex: 999999 }}>
           <div className="flex items-center gap-3">
-            <span className="text-xl">✓</span>
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
             <span className="text-sm sm:text-base font-medium">{successMessage}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="fixed top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-2xl shadow-lg animate-slide-down max-w-sm" style={{ zIndex: 999999 }}>
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm sm:text-base font-medium">{errorMessage}</span>
           </div>
         </div>
       )}
@@ -306,13 +350,14 @@ const Dashboard = () => {
       {/* Project Form Modal */}
       <Modal
         isOpen={isFormOpen}
-        title="Create New Project"
+        title={isEditMode ? "Edit Project" : "Create New Project"}
         onClose={handleFormCancel}
       >
         <ProjectForm
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
           isLoading={isSubmitting}
+          initialData={isEditMode ? editingProject : null}
         />
       </Modal>
     </div>

@@ -45,7 +45,7 @@ const TagsInput = ({
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
-          className={`flex-1 px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
+          className={`flex-1 px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 text-base ${
             errorMessage
               ? 'border-primary-400 focus:ring-primary-300'
               : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
@@ -54,7 +54,7 @@ const TagsInput = ({
         <button
           type="button"
           onClick={handleAddTag}
-          className="px-5 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-xl transition-all shadow-soft"
+          className="px-5 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-xl transition-all shadow-soft whitespace-nowrap"
         >
           Add
         </button>

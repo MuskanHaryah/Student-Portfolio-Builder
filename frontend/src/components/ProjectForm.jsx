@@ -141,7 +141,7 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
       <div>
         <TagsInput
           label="Technologies Used"
-          placeholder="e.g., React, Node.js (press Enter to add)"
+          placeholder="React, Node.js, etc (Enter to add)"
           tags={formData.technologies}
           onTagsChange={handleTechnologiesChange}
           errorMessage={errors.technologies}
@@ -169,7 +169,7 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
       {/* Live Link */}
       <div>
         <label htmlFor="liveLink" className="block text-sm font-medium text-warm-700 mb-2">
-          Live Demo Link
+          Live Demo Link <span className="text-warm-400 text-xs">(optional)</span>
         </label>
         <input
           type="url"
