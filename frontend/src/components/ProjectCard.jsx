@@ -8,45 +8,45 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
+    <div className="bg-white rounded-3xl shadow-soft hover:shadow-lg transition-all duration-300 overflow-hidden border border-cream-200 group">
       {/* Project Image */}
       {project.images && project.images.length > 0 ? (
-        <div className="w-full h-48 overflow-hidden bg-gray-200 relative group">
+        <div className="w-full h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-cream-100 to-blush-100 relative">
           <img
             src={project.images[0]}
             alt={project.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          {/* Action buttons overlay */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center gap-2">
+          {/* Action buttons overlay - show on mobile, hover on desktop */}
+          <div className="absolute inset-0 bg-gradient-to-t from-warm-900/60 via-warm-900/20 to-transparent md:from-warm-900/0 md:via-warm-900/0 md:to-transparent md:group-hover:from-warm-900/60 md:group-hover:via-warm-900/30 md:group-hover:to-transparent transition-all duration-300 flex items-center justify-center gap-2">
             <button
               onClick={onEdit}
-              className="opacity-0 group-hover:opacity-100 transition bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+              className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 bg-cream-100 hover:bg-cream-200 text-warm-800 px-4 py-2 rounded-xl font-medium text-xs sm:text-sm shadow-lg transform md:translate-y-2 md:group-hover:translate-y-0"
             >
               Edit
             </button>
             <button
               onClick={handleDelete}
-              className="opacity-0 group-hover:opacity-100 transition bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+              className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl font-medium text-xs sm:text-sm shadow-lg transform md:translate-y-2 md:group-hover:translate-y-0"
             >
               Delete
             </button>
           </div>
         </div>
       ) : (
-        <div className="w-full h-48 bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center relative group">
-          <span className="text-gray-600">No image</span>
+        <div className="w-full h-40 sm:h-48 bg-gradient-to-br from-cream-100 via-blush-50 to-primary-50 flex items-center justify-center relative">
+          <span className="text-warm-400 text-4xl sm:text-5xl"></span>
           {/* Action buttons overlay for no image */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center gap-2">
+          <div className="absolute inset-0 bg-gradient-to-t from-warm-900/60 via-warm-900/20 to-transparent md:from-warm-900/0 md:via-warm-900/0 md:to-transparent md:group-hover:from-warm-900/60 md:group-hover:via-warm-900/30 md:group-hover:to-transparent transition-all duration-300 flex items-center justify-center gap-2">
             <button
               onClick={onEdit}
-              className="opacity-0 group-hover:opacity-100 transition bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+              className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 bg-cream-100 hover:bg-cream-200 text-warm-800 px-4 py-2 rounded-xl font-medium text-xs sm:text-sm shadow-lg transform md:translate-y-2 md:group-hover:translate-y-0"
             >
               Edit
             </button>
             <button
               onClick={handleDelete}
-              className="opacity-0 group-hover:opacity-100 transition bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md font-medium text-sm"
+              className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl font-medium text-xs sm:text-sm shadow-lg transform md:translate-y-2 md:group-hover:translate-y-0"
             >
               Delete
             </button>
@@ -55,29 +55,29 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
       )}
 
       {/* Project Content */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+      <div className="p-5 sm:p-6">
+        <h3 className="font-heading text-lg sm:text-xl font-bold text-warm-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
           {project.title}
         </h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-warm-600 text-xs sm:text-sm mb-4 line-clamp-2 leading-relaxed">
           {project.description || 'No description provided'}
         </p>
 
         {/* Technologies */}
         {project.technologies && project.technologies.length > 0 && (
-          <div className="mb-3">
+          <div className="mb-4">
             <div className="flex flex-wrap gap-2">
               {project.technologies.slice(0, 3).map((tech, index) => (
                 <span
                   key={index}
-                  className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full"
+                  className="inline-block bg-gradient-to-r from-primary-50 to-blush-50 text-primary-700 text-xs px-3 py-1.5 rounded-full font-medium border border-primary-100"
                 >
                   {tech}
                 </span>
               ))}
               {project.technologies.length > 3 && (
-                <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
-                  +{project.technologies.length - 3}
+                <span className="inline-block bg-cream-100 text-warm-600 text-xs px-3 py-1.5 rounded-full font-medium border border-cream-200">
+                  +{project.technologies.length - 3} more
                 </span>
               )}
             </div>
@@ -85,15 +85,15 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
         )}
 
         {/* Links */}
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {project.githubLink && (
             <a
               href={project.githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 text-center text-sm bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-md transition"
+              className="flex-1 text-center text-xs sm:text-sm bg-warm-800 hover:bg-warm-900 text-white py-2.5 rounded-xl transition-all duration-300 font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
             >
-              GitHub
+              <span className="mr-1">⚡</span>GitHub
             </a>
           )}
           {project.liveLink && (
@@ -101,9 +101,9 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
               href={project.liveLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 text-center text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition"
+              className="flex-1 text-center text-xs sm:text-sm bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white py-2.5 rounded-xl transition-all duration-300 font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
             >
-              Live
+              <span className="mr-1"></span>Live Demo
             </a>
           )}
         </div>

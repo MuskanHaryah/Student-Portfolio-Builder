@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ImageUpload from './ImageUpload';
 import TagsInput from './TagsInput';
+import LoadingSpinner from './LoadingSpinner';
 
 const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false }) => {
   const [formData, setFormData] = useState({
@@ -91,7 +92,7 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Title Field */}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="title" className="block text-sm font-medium text-warm-700 mb-2">
           Project Title *
         </label>
         <input
@@ -101,18 +102,18 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
           value={formData.title}
           onChange={handleChange}
           placeholder="e.g., E-commerce Platform"
-          className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+          className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50 ${
             errors.title
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
+              ? 'border-red-400 focus:ring-red-200 focus:border-red-400'
+              : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
           }`}
         />
-        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+        {errors.title && <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1"><span></span>{errors.title}</p>}
       </div>
 
       {/* Description Field */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="description" className="block text-sm font-medium text-warm-700 mb-2">
           Description *
         </label>
         <textarea
@@ -122,13 +123,13 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
           onChange={handleChange}
           placeholder="Describe your project, what it does, and key features..."
           rows="4"
-          className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+          className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50 resize-none ${
             errors.description
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
+              ? 'border-red-400 focus:ring-red-200 focus:border-red-400'
+              : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
           }`}
         />
-        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+        {errors.description && <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1"><span></span>{errors.description}</p>}
       </div>
 
       {/* Image Upload */}
@@ -151,7 +152,7 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
 
       {/* GitHub Link */}
       <div>
-        <label htmlFor="githubLink" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="githubLink" className="block text-sm font-medium text-warm-700 mb-2">
           GitHub Repository Link
         </label>
         <input
@@ -161,13 +162,13 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
           value={formData.githubLink}
           onChange={handleChange}
           placeholder="https://github.com/username/repo"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 bg-cream-50 transition"
         />
       </div>
 
       {/* Live Link */}
       <div>
-        <label htmlFor="liveLink" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="liveLink" className="block text-sm font-medium text-warm-700 mb-2">
           Live Demo Link
         </label>
         <input
@@ -177,13 +178,13 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
           value={formData.liveLink}
           onChange={handleChange}
           placeholder="https://myproject.com"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 bg-cream-50 transition"
         />
       </div>
 
       {/* Date Completed */}
       <div>
-        <label htmlFor="dateCompleted" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="dateCompleted" className="block text-sm font-medium text-warm-700 mb-2">
           Completion Date
         </label>
         <input
@@ -192,24 +193,25 @@ const ProjectForm = ({ onSubmit, onCancel, initialData = null, isLoading = false
           name="dateCompleted"
           value={formData.dateCompleted}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 bg-cream-50 transition"
         />
       </div>
 
       {/* Form Actions */}
-      <div className="flex gap-4 pt-4 border-t">
+      <div className="flex gap-4 pt-6 border-t border-cream-200">
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50"
+          className="flex-1 btn-rose disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
+          {isLoading && <LoadingSpinner size="sm" color="white" />}
           {isLoading ? 'Saving...' : initialData ? 'Update Project' : 'Create Project'}
         </button>
         <button
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-lg transition disabled:opacity-50"
+          className="flex-1 btn-cream disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Cancel
         </button>

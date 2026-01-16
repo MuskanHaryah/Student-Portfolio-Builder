@@ -98,23 +98,32 @@ export const updateProfile = async (req, res) => {
     const userId = req.userId;
     const { name, bio, skills, github, linkedin, website } = req.body;
 
+    console.log('Update Profile Request:', { userId, name, bio, skills, github, linkedin, website });
+
+    // Validation
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+
     // Find and update user
     const user = await User.findByIdAndUpdate(
       userId,
       {
-        name,
-        bio,
-        skills,
-        github,
-        linkedin,
-        website,
+        name: name.trim(),
+        bio: bio || '',
+        skills: skills || [],
+        github: github || '',
+        linkedin: linkedin || '',
+        website: website || '',
       },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    console.log('Profile Updated Successfully:', user);
 
     res.status(200).json({
       message: 'Profile updated successfully',
@@ -131,6 +140,7 @@ export const updateProfile = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error('Profile Update Error:', error);
     res.status(500).json({ message: error.message });
   }
 };

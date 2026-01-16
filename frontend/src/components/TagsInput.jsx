@@ -32,8 +32,8 @@ const TagsInput = ({
   return (
     <div>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          {label} {isRequired && <span className="text-red-500">*</span>}
+        <label className="block text-sm font-medium text-warm-700 mb-2">
+          {label} {isRequired && <span className="text-primary-500">*</span>}
         </label>
       )}
 
@@ -45,16 +45,16 @@ const TagsInput = ({
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
-          className={`flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+          className={`flex-1 px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
             errorMessage
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
+              ? 'border-primary-400 focus:ring-primary-300'
+              : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
           }`}
         />
         <button
           type="button"
           onClick={handleAddTag}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition"
+          className="px-5 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-xl transition-all shadow-soft"
         >
           Add
         </button>
@@ -62,12 +62,12 @@ const TagsInput = ({
 
       {/* Help Text */}
       {helpText && !errorMessage && (
-        <p className="text-gray-500 text-xs mb-3">{helpText}</p>
+        <p className="text-warm-500 text-xs mb-3">{helpText}</p>
       )}
 
       {/* Error Message */}
       {errorMessage && (
-        <p className="text-red-500 text-sm mb-3">{errorMessage}</p>
+        <p className="text-primary-600 text-sm mb-3">{errorMessage}</p>
       )}
 
       {/* Tags Display */}
@@ -76,13 +76,13 @@ const TagsInput = ({
           {tags.map((tag) => (
             <div
               key={tag}
-              className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-50 to-blush-50 text-primary-700 px-4 py-2 rounded-full text-sm border border-primary-100"
             >
-              <span>{tag}</span>
+              <span className="font-medium">{tag}</span>
               <button
                 type="button"
                 onClick={() => handleRemoveTag(tag)}
-                className="text-blue-600 hover:text-blue-900 font-bold text-lg leading-none"
+                className="text-primary-500 hover:text-primary-700 font-bold text-lg leading-none hover:scale-110 transition-transform"
               >
                 ×
               </button>

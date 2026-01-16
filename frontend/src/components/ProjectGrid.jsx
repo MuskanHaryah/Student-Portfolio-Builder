@@ -1,28 +1,36 @@
 import React from 'react';
 import ProjectCard from './ProjectCard';
+import SkeletonCard from './SkeletonCard';
 
 const ProjectGrid = ({ projects, isLoading, onAddProject, onDeleteProject, onEditProject }) => {
-  if (isLoading) {
+  // Ensure projects is always an array
+  const projectList = Array.isArray(projects) ? projects : [];
+  
+  // Only show skeleton when loading AND we don't have any projects yet
+  if (isLoading && projectList.length === 0) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading projects...</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <SkeletonCard key={i} />
+        ))}
       </div>
     );
   }
 
-  if (projects.length === 0) {
+  if (projectList.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-gray-400 text-5xl mb-4">📁</div>
-        <p className="text-gray-600 text-lg mb-4">No projects yet. Create your first project!</p>
+      <div className="text-center py-16 bg-gradient-to-br from-cream-50 to-blush-50 rounded-3xl border border-cream-200">
+        <div className="text-5xl mb-4">📁</div>
+        <p className="text-warm-700 text-lg mb-2 font-medium">No projects yet</p>
+        <p className="text-warm-500 mb-6">Create your first project to get started!</p>
         <button
           onClick={onAddProject}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition"
+          className="btn-rose inline-flex items-center justify-center gap-2"
         >
-          Create Project
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Project</span>
         </button>
       </div>
     );
@@ -30,7 +38,7 @@ const ProjectGrid = ({ projects, isLoading, onAddProject, onDeleteProject, onEdi
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map((project) => (
+      {projectList.map((project) => (
         <ProjectCard 
           key={project._id} 
           project={project}

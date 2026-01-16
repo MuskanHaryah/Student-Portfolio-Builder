@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -88,21 +89,35 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-2">Create Account</h1>
-        <p className="text-gray-600 text-center mb-8">Join and showcase your projects</p>
+    <div className="min-h-screen flex items-center justify-center bg-cream-50 px-4 py-8 sm:py-12 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-blush-100/50 to-cream-200/40 rounded-full blur-3xl -translate-y-1/4 -translate-x-1/4"></div>
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gradient-to-tl from-primary-100/40 to-cream-200/30 rounded-full blur-3xl translate-y-1/4 translate-x-1/4"></div>
+      <div className="absolute bottom-20 left-20 w-3 h-3 bg-blush-400 rounded-full animate-bounce-slow"></div>
+      <div className="absolute top-32 right-32 w-4 h-4 bg-primary-300 rounded-full animate-bounce-slow" style={{ animationDelay: '0.7s' }}></div>
+      
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-lg rounded-3xl shadow-lg p-8 sm:p-10 border border-cream-200 relative z-10">
+        {/* Decorative flower */}
+        <div className="absolute -top-6 -left-6 text-4xl transform -rotate-12"></div>
+        
+        <div className="text-center mb-8">
+          <div className="inline-block p-4 bg-gradient-to-br from-blush-100 to-primary-100 rounded-2xl mb-4 shadow-soft">
+            <span className="text-4xl"></span>
+          </div>
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-gradient-rose mb-2">Create Account</h1>
+          <p className="text-sm sm:text-base text-warm-600">Join and showcase your amazing projects</p>
+        </div>
 
         {apiError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-700 text-sm">{apiError}</p>
+          <div className="mb-6 p-4 bg-primary-50 border border-primary-200 rounded-xl">
+            <p className="text-primary-700 text-sm">{apiError}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name Field */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-warm-700 mb-2">
               Full Name
             </label>
             <input
@@ -111,19 +126,19 @@ const Register = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="John Doe"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+              placeholder="Jane Doe"
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
                 errors.name
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-purple-500'
+                  ? 'border-primary-400 focus:ring-primary-300'
+                  : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
               }`}
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-primary-600 text-sm mt-1">{errors.name}</p>}
           </div>
 
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-warm-700 mb-2">
               Email Address
             </label>
             <input
@@ -133,18 +148,18 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
                 errors.email
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-purple-500'
+                  ? 'border-primary-400 focus:ring-primary-300'
+                  : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
               }`}
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-primary-600 text-sm mt-1">{errors.email}</p>}
           </div>
 
           {/* Username Field */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-warm-700 mb-2">
               Username
             </label>
             <input
@@ -153,19 +168,19 @@ const Register = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              placeholder="johndoe"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+              placeholder="janedoe"
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
                 errors.username
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-purple-500'
+                  ? 'border-primary-400 focus:ring-primary-300'
+                  : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
               }`}
             />
-            {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+            {errors.username && <p className="text-primary-600 text-sm mt-1">{errors.username}</p>}
           </div>
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-warm-700 mb-2">
               Password
             </label>
             <input
@@ -175,18 +190,18 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
                 errors.password
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-purple-500'
+                  ? 'border-primary-400 focus:ring-primary-300'
+                  : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
               }`}
             />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-primary-600 text-sm mt-1">{errors.password}</p>}
           </div>
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-warm-700 mb-2">
               Confirm Password
             </label>
             <input
@@ -196,29 +211,30 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition bg-cream-50/50 ${
                 errors.confirmPassword
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-purple-500'
+                  ? 'border-primary-400 focus:ring-primary-300'
+                  : 'border-cream-200 focus:ring-primary-200 focus:border-primary-400'
               }`}
             />
-            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-primary-600 text-sm mt-1">{errors.confirmPassword}</p>}
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition duration-200 disabled:opacity-50 mt-6"
+            className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-3.5 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6 flex items-center justify-center gap-2 shadow-rose hover:shadow-lg transform hover:-translate-y-0.5"
           >
-            {loading ? 'Creating account...' : 'Register'}
+            {loading && <LoadingSpinner size="sm" color="white" />}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
         {/* Login Link */}
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-warm-600 mt-8">
           Already have an account?{' '}
-          <a href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+          <a href="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
             Login
           </a>
         </p>

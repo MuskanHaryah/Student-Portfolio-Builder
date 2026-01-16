@@ -28,7 +28,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/portfolio" element={<Portfolio />} />
+          <Route 
+            path="/portfolio" 
+            element={
+              <ProtectedRoute>
+                <Portfolio />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/portfolio/:username" element={<PublicPortfolio />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

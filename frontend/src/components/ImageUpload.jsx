@@ -68,7 +68,7 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-3">
+      <label className="block text-sm font-medium text-warm-700 mb-3">
         Project Images
       </label>
 
@@ -78,10 +78,10 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${
+        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
           dragActive
-            ? 'border-blue-600 bg-blue-50'
-            : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+            ? 'border-primary-500 bg-primary-50 scale-[1.02]'
+            : 'border-cream-300 bg-cream-50 hover:bg-blush-50 hover:border-primary-300'
         }`}
       >
         <input
@@ -93,17 +93,17 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
           className="hidden"
         />
         <label htmlFor="imageInput" className="cursor-pointer">
-          <div className="text-4xl text-gray-400 mb-2">📷</div>
-          <p className="text-gray-700 font-medium mb-1">Drag images here or click to select</p>
-          <p className="text-gray-500 text-sm">PNG, JPG, GIF up to 5MB each</p>
+          <div className="text-4xl text-primary-400 mb-3">📷</div>
+          <p className="text-warm-700 font-medium mb-1">Drag images here or click to select</p>
+          <p className="text-warm-500 text-sm">PNG, JPG, GIF up to 5MB each</p>
         </label>
       </div>
 
       {/* Image Previews */}
       {previews.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">
-            Selected Images ({previews.length})
+          <h3 className="text-sm font-medium text-warm-700 mb-3 flex items-center gap-2">
+            <span></span> Selected Images ({previews.length})
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {previews.map((preview) => (
@@ -111,17 +111,17 @@ const ImageUpload = ({ onImagesChange, initialImages = [] }) => {
                 <img
                   src={preview.src}
                   alt="Preview"
-                  className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                  className="w-full h-32 object-cover rounded-xl border-2 border-cream-200 group-hover:border-primary-300 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(preview.id)}
-                  className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition -top-2 -right-2"
+                  className="absolute -top-2 -right-2 bg-primary-500 hover:bg-primary-600 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg"
                 >
                   ×
                 </button>
                 {preview.isNew && (
-                  <div className="absolute bottom-1 right-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                  <div className="absolute bottom-2 right-2 bg-primary-500 text-white text-xs px-2 py-1 rounded-full font-medium">
                     New
                   </div>
                 )}

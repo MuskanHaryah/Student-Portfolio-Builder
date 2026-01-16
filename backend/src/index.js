@@ -10,9 +10,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
-connectDB();
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -27,7 +24,12 @@ app.get('/', (req, res) => {
   res.json({ message: 'Student Portfolio Builder API is running' });
 });
 
-// Start server
+// Start server immediately
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// Connect to MongoDB in the background (don't wait for it)
+connectDB().catch(err => {
+  console.error('MongoDB connection failed, but server is still running:', err.message);
 });
