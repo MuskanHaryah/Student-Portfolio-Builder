@@ -7,7 +7,7 @@ import ProfileSettings from '../components/ProfileSettings';
 import api from '../services/api';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [editingProject, setEditingProject] = useState(null);
 
   const fetchProjects = useCallback(async () => {
     console.log('[Dashboard] fetchProjects called');
@@ -46,6 +47,7 @@ const Dashboard = () => {
   }, [hasLoadedProjects, fetchProjects]);
 
   const handleAddProject = () => {
+    setEditingProject(null);
     setIsFormOpen(true);
   };
 
@@ -65,34 +67,55 @@ const Dashboard = () => {
       // Add technologies as JSON
       submitData.append('technologies', JSON.stringify(formData.technologies));
       
-      // Add image files
+      // Handle images
+      const existingImages = [];
       if (formData.images && formData.images.length > 0) {
         formData.images.forEach((image) => {
           // If it's a File object (new upload), add it
           if (image instanceof File) {
             submitData.append('images', image);
           }
-          // If it's a string URL (existing image), we'll handle separately
+          // If it's a string URL (existing image), save for later
           else if (typeof image === 'string' && image.startsWith('http')) {
-            submitData.append('existingImages', image);
+            existingImages.push(image);
           }
         });
       }
       
-      const response = await api.post('/projects', submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Add existing images array for update
+      if (editingProject && existingImages.length > 0) {
+        submitData.append('existingImages', JSON.stringify(existingImages));
+      }
       
-      setProjects([response.data, ...projects]);
+      let response;
+      if (editingProject) {
+        // Update existing project
+        response = await api.put(`/projects/${editingProject._id}`, submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // Update the project in the list
+        setProjects(projects.map(p => p._id === editingProject._id ? response.data.project : p));
+        setSuccessMessage('Project updated successfully!');
+      } else {
+        // Create new project
+        response = await api.post('/projects', submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setProjects([response.data, ...projects]);
+        setSuccessMessage('Project created successfully!');
+      }
+      
       setIsFormOpen(false);
-      setSuccessMessage('Project created successfully!');
+      setEditingProject(null);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      console.error('Error creating project:', error);
+      console.error('Error saving project:', error);
       console.error('Error response:', error.response);
-      const errorMsg = error.response?.data?.message || 'Error creating project. Please try again.';
+      const errorMsg = error.response?.data?.message || 'Error saving project. Please try again.';
       setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(''), 4000);
     } finally {
@@ -102,6 +125,7 @@ const Dashboard = () => {
 
   const handleFormCancel = () => {
     setIsFormOpen(false);
+    setEditingProject(null);
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -119,17 +143,15 @@ const Dashboard = () => {
   };
 
   const handleEditProject = (project) => {
-    // TODO: Implement edit functionality in next step
-    console.log('Edit project:', project);
-    setErrorMessage('Edit functionality coming soon!');
-    setTimeout(() => setErrorMessage(''), 3000);
+    setEditingProject(project);
+    setIsFormOpen(true);
   };
 
-  const handleUpdateProfile = () => {
+  const handleUpdateProfile = (updatedUser) => {
     // Update user in context/auth state
-    // This assumes the AuthContext has a way to update user
-    // For now, just refresh the page to get updated data
-    window.location.reload();
+    updateUser(updatedUser);
+    setSuccessMessage('Profile updated successfully!');
+    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
   return (
@@ -328,13 +350,14 @@ const Dashboard = () => {
       {/* Project Form Modal */}
       <Modal
         isOpen={isFormOpen}
-        title="Create New Project"
+        title={editingProject ? "Edit Project" : "Create New Project"}
         onClose={handleFormCancel}
       >
         <ProjectForm
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
           isLoading={isSubmitting}
+          initialData={editingProject}
         />
       </Modal>
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import portfolioImage from './image.png';
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
@@ -76,39 +77,35 @@ const Home = () => {
             {/* Right decorative image placeholder */}
             <div className="hidden lg:block relative">
               <div className="relative">
-                {/* Main decorative card */}
-                <div className="bg-gradient-to-br from-blush-200 to-cream-200 rounded-[3rem] p-8 transform rotate-3 shadow-2xl">
-                  <div className="bg-white rounded-[2rem] p-6 transform -rotate-6 shadow-xl">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center text-white text-xl"></div>
-                      <div>
-                        <div className="h-3 w-24 bg-warm-200 rounded-full"></div>
-                        <div className="h-2 w-16 bg-warm-100 rounded-full mt-2"></div>
-                      </div>
+                {/* Main decorative card - smaller box */}
+                <div className="bg-gradient-to-br from-blush-200 to-cream-200 rounded-[2.5rem] p-6 transform rotate-3 shadow-2xl">
+                  <div className="bg-white rounded-[2rem] p-5 transform -rotate-6 shadow-xl overflow-hidden">
+                    {/* Image Container */}
+                    <div className="mb-4 rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                      <img 
+                        src={portfolioImage} 
+                        alt="Portfolio Preview" 
+                        className="w-full h-auto object-cover"
+                      />
                     </div>
-                    <div className="space-y-3">
-                      <div className="h-2 w-full bg-cream-100 rounded-full"></div>
-                      <div className="h-2 w-4/5 bg-cream-100 rounded-full"></div>
-                      <div className="h-2 w-3/5 bg-cream-100 rounded-full"></div>
-                    </div>
-                    <div className="flex gap-2 mt-6">
-                      <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-xs font-medium">Design</span>
-                      <span className="px-3 py-1 bg-cream-100 text-secondary-600 rounded-full text-xs font-medium">Creative</span>
-                      <span className="px-3 py-1 bg-blush-100 text-blush-600 rounded-full text-xs font-medium">Pro</span>
+                    <div className="flex gap-2 justify-center">
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#C75C5C]/10 to-blush-50 text-[#C75C5C] rounded-full text-xs font-medium border border-[#C75C5C]/20">Showcase</span>
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#C75C5C]/10 to-blush-50 text-[#C75C5C] rounded-full text-xs font-medium border border-[#C75C5C]/20">Projects</span>
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#C75C5C]/10 to-blush-50 text-[#C75C5C] rounded-full text-xs font-medium border border-[#C75C5C]/20">Skills</span>
                     </div>
                   </div>
                 </div>
                 
-                {/* Floating decorative elements */}
-                <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary-400/20 rounded-full blur-xl"></div>
-                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-cream-300/40 rounded-full blur-2xl"></div>
+                {/* Floating decorative elements - Enhanced circles */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full blur-md opacity-60 animate-pulse"></div>
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-br from-cream-300 to-blush-300 rounded-full blur-2xl opacity-50 animate-pulse" style={{ animationDelay: '1s' }}></div>
                 
-                {/* Small floating cards */}
+                {/* Small floating cards with icons */}
                 <div className="absolute -top-6 right-12 bg-white rounded-xl p-3 shadow-lg border border-cream-100 animate-bounce-slow">
-                  <span className="text-2xl"></span>
+                  <span className="text-2xl">✨</span>
                 </div>
                 <div className="absolute bottom-12 -left-6 bg-white rounded-xl p-3 shadow-lg border border-cream-100 animate-bounce-slow" style={{ animationDelay: '0.7s' }}>
-                  <span className="text-2xl"></span>
+                  <span className="text-2xl">🎨</span>
                 </div>
               </div>
             </div>

@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ConfirmationModal from './ConfirmationModal';
 
 const ProjectCard = ({ project, onDelete, onEdit }) => {
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-      onDelete(project._id);
-    }
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false);
+    onDelete(project._id);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
   };
 
   return (
@@ -21,7 +31,7 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
           </svg>
         </button>
         <button
-          onClick={handleDelete}
+          onClick={handleDeleteClick}
           className="bg-red-500/95 backdrop-blur-sm hover:bg-red-600 text-white p-2 rounded-xl font-medium text-xs shadow-lg transition-all duration-200 hover:scale-110"
           title="Delete Project"
         >
@@ -114,6 +124,19 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
           )}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        title="Delete Project"
+        message="Are you sure you want to delete this project?"
+        description="This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        type="danger"
+      />
     </div>
   );
 };

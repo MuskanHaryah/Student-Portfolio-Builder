@@ -81,7 +81,26 @@ const Register = () => {
         login(user, token);
         navigate('/dashboard');
       } catch (error) {
-        setApiError(error.response?.data?.message || 'Registration failed. Please try again.');
+        // Handle different error types with user-friendly messages
+        let errorMessage = 'Registration failed. Please try again.';
+        
+        if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+          errorMessage = 'Cannot connect to the server. Please check if the server is running.';
+        } else if (error.code === 'ECONNREFUSED') {
+          errorMessage = 'Server is not responding. Please try again later.';
+        } else if (error.message.includes('SSL') || error.message.includes('ssl')) {
+          errorMessage = 'Connection error. Please check your server configuration.';
+        } else if (error.response?.status === 400) {
+          errorMessage = error.response.data.message || 'Invalid registration details.';
+        } else if (error.response?.status === 409) {
+          errorMessage = 'Email or username already exists. Please use different credentials.';
+        } else if (error.response?.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+        
+        setApiError(errorMessage);
       } finally {
         setLoading(false);
       }
