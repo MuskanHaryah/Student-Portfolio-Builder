@@ -42,8 +42,11 @@ export const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        username: user.username,
-      },
+        username: user.username,        bio: user.bio || '',
+        skills: user.skills || [],
+        github: user.github || '',
+        linkedin: user.linkedin || '',
+        website: user.website || '',      },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -85,6 +88,11 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         username: user.username,
+        bio: user.bio || '',
+        skills: user.skills || [],
+        github: user.github || '',
+        linkedin: user.linkedin || '',
+        website: user.website || '',
       },
     });
   } catch (error) {
