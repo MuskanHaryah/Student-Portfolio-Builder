@@ -121,4 +121,4 @@ Frontend runs on `http://localhost:5173` • Backend runs on `http://localhost:5
 
 ## 📄 License
 
-MIT License — feel free to use this project for learning and development!
+MIT License — feel free to use this project for learning and developmen.
